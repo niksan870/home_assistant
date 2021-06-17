@@ -29,7 +29,6 @@ app.register_blueprint(auth_blueprint)
 app.register_blueprint(main_blueprint)
 app.register_blueprint(lights_blueprint)
 db.create_all(app=create_app())
-# db.session.commit()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

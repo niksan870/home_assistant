@@ -2,23 +2,14 @@
 
 {% block content %}
 <div class="row">
-    <nav class="navbar navbar-expand-lg navbar-primary bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-primary">
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page"
-                           href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1"
-                           aria-disabled="true">Disabled</a>
+                        <a class="btn btn-success" aria-current="page"
+                           href="{{ url_for('light.lights_get_create') }}">Add
+                            a light</a>
                     </li>
                 </ul>
             </div>
@@ -28,11 +19,40 @@
         <h1 class="title">
             Your lights
         </h1>
-    </div>
-    <div class="col-12">
-        <h1>
-            {% if lights %}{{lights}}{% else %}0{% endif %}
-        </h1>
+        {% if lights %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if lights %}
+                {% for light in lights %}
+                <tr>
+                    <td>{{light.name}}</td>
+                    <td>{{light.description}}</td>
+                    <td>{{light.status}}</td>
+                    <td><a class="btn btn-success"
+                           href="{{ url_for('light.lights_get_update', id=light.id) }}">Edit</a>
+                        <form style="display:inline;" method="POST" action="/lights/delete">
+                            <input type="hidden" name="light_id"
+                                   class="form-control" placeholder="{{light.id}}"
+                                   value="{{light.id}}">
+                            <button class="btn btn-danger"
+                                    type="submit">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+        {% else %}0{% endif %}
     </div>
 </div>
 {% endblock %}

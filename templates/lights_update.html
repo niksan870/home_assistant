@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-signin">
+    <form method="POST" action="/lights/update">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h1 class="h3 mb-3 fw-normal">Create a light</h1>
+        <div class="form-floating">
+            <input type="name" value="{{light.name}}" name="name"
+                   class="form-control"
+                   id="floatingInput" placeholder="{{light.name}}">
+            <label for="floatingInput">{{light.name}}</label>
+        </div>
+        <div class="form-floating">
+            <input type="description" value="{{light.description}}"
+                   name="description" class="form-control"
+                   id="floatingDescription"
+                   placeholder="{{light.description}}">
+            <label for="floatingDescription">{{light.description}}</label>
+        </div>
+
+       <select name="status" class="form-select" aria-label="Default select example">
+            {% if light.status == "on" %}<option selected value="on">On</option>{%else%}{% endif %}<option value="on">On</option>
+            {% if light.status == "off" %}<option selected value="off">Off</option>{%else%}{% endif %}<option value="off">Off</option>
+            {% if light.status == "broken" %}<option selected value="broken">Broken</option>{%else%}{% endif %}<option value="broken">Broken</option>
+            {% if light.status == "non_existent" %}<option selected value="non_existing">Non existing</option>{%else%}{% endif %}<option value="non_existing">Non existing</option>
+        </select>
+        <input type="hidden" name="light_id" class="form-control"
+               placeholder="{{light.id}}" value="{{light.id}}">
+        <button class="w-100 btn btn-lg btn-success" type="submit">Update
+        </button>
+    </form>
+</div>
+{% endblock %}

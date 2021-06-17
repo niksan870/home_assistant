@@ -5,11 +5,16 @@ from .. import db
 class Light(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    discription = db.Column(db.String(200))
+    description = db.Column(db.String(200))
+    status = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = relationship("User", back_populates="light")
 
-    def __init__(self, name, discription):
+    def __init__(self, name, description, user_id, status):
         self.name = name
-        self.discription = discription
+        self.description = description
+        self.user_id = user_id
+        self.status = status
 
     def save(self):
         """Save a student to the database.
@@ -25,4 +30,4 @@ class Light(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return '<Light %s>' % self.discription
+        return f'<Light name={self.name}, description={self.description}, status={self.status}, user_id={self.user_id}>'
