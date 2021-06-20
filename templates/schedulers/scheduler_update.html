@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-signin">
+    <form method="POST" action="/scheduler/update">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h1 class="h3 mb-3 fw-normal">Update the scheduler</h1>
+        <div class="form-floating">
+            <input type="name" value="{{scheduler.name}}" name="name" class="form-control" id="floatingInput"
+                placeholder="{{scheduler.name}}">
+            <label for="floatingInput">{{scheduler.name}}</label>
+        </div>
+        <select class="form-select" name="appliances" multiple aria-label="multiple select example">
+            {% if appliances %}
+            {% for appliance in appliances%}
+            {% set unique = '0' %}
+            {% set counter = namespace(counts=0) %}
+
+            {%for sapp in scheduler.appliances%}
+            {%if sapp.name == appliance.name%}
+            {% set unique = '1' %}
+            {% set counter.counts = counter.counts + 1 %}
+            <option selected value="{{appliance.id}}">{{appliance.name}}</option>
+            {%endif%}
+            {%endfor%}
+            {% if counter.counts != 1%}
+            <option value="{{appliance.id}}">{{appliance.name}}</option>
+            {%endif%}
+
+            {% endfor %}
+            {% endif %}
+        </select>
+        <div class="form-floating">
+            <input type="img" value="{{scheduler.cron}}" name="cron" class="form-control" id="cron">
+            <label for="cron">{{scheduler.cron}}</label>
+        </div>
+        <input type="hidden" name="scheduler_id" class="form-control" placeholder="{{scheduler.id}}"
+            value="{{scheduler.id}}">
+        <button class="w-100 btn btn-lg btn-success" type="submit">Update
+        </button>
+    </form>
+</div>
+{% endblock %}

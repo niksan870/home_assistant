@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <h1>Scheduler: {{scheduler.name}}</h1>
+    <h2>Cron scheduler: {{scheduler.cron}}</h2>
+    <h2>Appliances: {% if scheduler.appliances %}{% for appliance in
+        scheduler.appliances%}{{appliance.name}},{%endfor%}{%endif%}</h2>
+</div>
+{% endblock %}

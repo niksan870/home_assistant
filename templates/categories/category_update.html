@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-signin">
+    <form method="POST" action="/category/update">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="notification is-danger">
+            {{ messages[0] }}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <h1 class="h3 mb-3 fw-normal">Update the category</h1>
+        <div class="form-floating">
+            <input type="name" value="{{category.name}}" name="name" class="form-control" id="floatingInput"
+                placeholder="{{category.name}}">
+            <label for="floatingInput">{{category.name}}</label>
+        </div>
+        <div class="form-floating">
+            <input type="{{category.description}}" value="{{category.description}}" name="description"
+                class="form-control" id="description" placeholder="{{category.description}}">
+            <label for="description">{{category.description}}</label>
+        </div>
+        <div class="form-floating">
+            <input type="img" value="{{category.image}}" name="image" class="form-control" id="image">
+            <label for="image">{{category.image}}</label>
+        </div>
+        <input type="hidden" name="category_id" class="form-control" placeholder="{{category.id}}"
+            value="{{category.id}}">
+        <button class="w-100 btn btn-lg btn-success" type="submit">Update
+        </button>
+    </form>
+</div>
+{% endblock %}

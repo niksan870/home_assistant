@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="width: 100%;
+background-image: url({{category.image}});
+height: 405px;
+background-position: center;"></div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{category.name}}</h5>
+                <p class="card-text">{{category.description}}</p>
+                <a href="{{ url_for('category.category_get_update', id=category.id) }}" class="btn btn-success">Edit</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <h1>Appliances related to this category</h1>
+    <div class="col-12">
+        {% if category.appliances %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">PIN NUMBER</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if category.appliances %}
+                {% for appliance in category.appliances %}
+                <tr>
+                    <td>{{appliance.name}}</td>
+                    <td>{{appliance.pin_num}}</td>
+                    <td>{{appliance.state}}</td>
+                    <td>{{appliance.category_id}}</td>
+                    <td>
+                        <a class="btn btn-success"
+                            href="{{ url_for('appliance.appliance_get_update', id=appliance.id) }}">Edit</a>
+                        <form style="display:inline;" method="POST" action="/appliance/delete">
+                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                                value="{{appliance.id}}">
+                            <button class="btn btn-danger" type="submit">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        {% else %} <div class="col-12">
+            <a class="btn btn-success" aria-current="page" href="{{ url_for('appliance.appliance_get_create') }}">Add
+                an appliance</a>
+        </div>{% endif %}
+    </div>
+</div>
+{% endblock %}

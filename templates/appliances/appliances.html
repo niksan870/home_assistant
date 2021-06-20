@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <a class="btn btn-success" aria-current="page" href="{{ url_for('appliance.appliance_get_create') }}">Add
+            an appliance</a>
+    </div>
+    <div class="col-8">
+        <h1 class="title">
+            Your appliances
+        </h1>
+        {% if appliances %}
+        {% for category in categories %}
+        <h2>{{category.name}}</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">PIN NUMBER</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Previous State</th>
+                    <th scope="col">Running State</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appliance in category.appliances %}
+                <tr>
+                    <td>{{appliance.name}}</td>
+                    <td>{{appliance.pin_num}}</td>
+                    <td>{{appliance.state}}</td>
+                    <td>{{appliance.previous_state}}</td>
+                    <td>{{appliance.running_state}}</td>
+                    <td>
+                        {% if appliance.running_state =="continuous" %}
+                        <form style="display:inline;" method="POST" action="/appliance/switch">
+                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                                value="{{appliance.id}}">
+                            <button class="btn btn-primary" type="submit">Switch {% if appliance.state == 0
+                                %}on{%else%}off{%endif%}
+                            </button>
+                        </form>
+                        {%else%}
+                        <form style="display:inline;" method="POST" action="/appliance/run_initial">
+                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                                value="{{appliance.id}}">
+                            <button class="btn btn-primary" type="submit">Run
+                            </button>
+                        </form>
+                        {%endif%}
+                        <a class="btn btn-success"
+                            href="{{ url_for('appliance.appliance_get_update', id=appliance.id) }}">Edit</a>
+                        <form style="display:inline;" method="POST" action="/appliance/delete">
+                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                                value="{{appliance.id}}">
+                            <button class="btn btn-danger" type="submit">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+        {% else %}0{% endif %}
+    </div>
+    <div class="col-4">
+        <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
+            width="300" height="400">
+    </div>
+</div>
+</div>
+
+<!-- {% if appliances %}
+{% for category in categories %}
+<h2>{{category.name}}</h2>
+<div class="accordion" id="accordionExample">
+    {% for appliance in category.appliances %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{appliance.pin_num}}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse{{appliance.pin_num}}" aria-expanded="true"
+                aria-controls="collapse{{appliance.pin_num}}">
+                {{appliance.name}}
+            </button>
+        </h2>
+        <div id="collapse{{appliance.pin_num}}" class="accordion-collapse collapse"
+            aria-labelledby="heading{{appliance.pin_num}}" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <form method="POST" action="/appliance/update">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <h1 class="h3 mb-3 fw-normal">Update the appliance</h1>
+                    <label for="floatingInput">Category</label>
+                    <select name="category_id" class="form-select" aria-label="Default select example">
+                        {%if categories%}
+                        {% for category in categories%}
+                        <option value="{{category.id}}">{{category.name}}</option>
+                        {%endfor%}
+                        {%endif%}
+                    </select>
+                    <div class="form-floating">
+                        <input type="name" value="{{appliance.name}}" name="name" class="form-control"
+                            id="floatingInput" placeholder="{{appliance.name}}">
+                        <label for="floatingInput">Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="pin_num" value="{{appliance.pin_num}}" name="pin_num" class="form-control"
+                            id="pin_num" placeholder="{{appliance.pin_num}}">
+                        <label for="pin_num">PIN Number</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="state" value="{{appliance.state}}" name="state" class="form-control" id="state"
+                            placeholder="state" placeholder="{{appliance.state}}">
+                        <label for="state">State</label>
+                    </div>
+                    <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                        value="{{appliance.id}}">
+                    <button class="w-100 btn btn-lg btn-success" type="submit">Update
+                    </button>
+                </form>
+                <form method="POST" action="/appliance/delete">
+                    <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                        value="{{appliance.id}}">
+                    <button class="btn btn-danger w-100 btn btn-lg" type="submit">Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+{% endfor %}
+{% else %}0{% endif %} -->
+{% endblock %}

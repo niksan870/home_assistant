@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <a class="btn btn-success" aria-current="page" href="{{ url_for('scheduler.scheduler_get_create') }}">Add
+            a scheduler</a>
+    </div>
+    <div class="col-8">
+        <h1 class="title">
+            Your schedulers
+        </h1>
+        {% if schedulers %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Appliances</th>
+                    <th scope="col">Cron</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scheduler in schedulers %}
+                <tr>
+                    <td>
+                        {{scheduler.name}}
+                    </td>
+                    <td>
+                        {% if scheduler.appliances %}
+                        {% for appliance in scheduler.appliances %}
+                        {{appliance.name}},
+                        {% endfor%}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{scheduler.cron}}
+                    </td>
+                    <td>
+                        <a class="btn btn-primary"
+                            href="{{ url_for('scheduler.scheduler_get_view', id=scheduler.id) }}">View</a>
+                        <a class="btn btn-success"
+                            href="{{ url_for('scheduler.scheduler_get_update', id=scheduler.id) }}">Edit</a>
+                        <form style="display:inline;" method="POST" action="/scheduler/delete">
+                            <input type="hidden" name="scheduler_id" class="form-control" placeholder="{{scheduler.id}}"
+                                value="{{scheduler.id}}">
+                            <button class="btn btn-danger" type="submit">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}0{% endif %}
+    </div>
+    <div class="col-4">
+        <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
+            width="300" height="400">
+    </div>
+</div>
+{% endblock %}

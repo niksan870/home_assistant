@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-8">
+        <div class="form-signin">
+            <form method="POST" action="/appliance">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+                {% endwith %}
+                <h1 class="h3 mb-3 fw-normal">Create an appliance</h1>
+                <select name="category_id" class="form-select" aria-label="Default select example">
+                    {%if categories%}
+                    <!-- <option selected>Select a category</option> -->
+                    {% for category in categories%}
+                    <option value="{{category.id}}">{{category.name}}</option>
+                    {%endfor%}
+                    {%endif%}
+                </select>
+                <div class="form-floating">
+                    <input type="name" name="name" class="form-control" id="floatingInput" placeholder="name">
+                    <label for="floatingInput">Name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="pin_num" name="pin_num" class="form-control" id="pin_num" placeholder="pin_num">
+                    <label for="pin_num">PIN NUMBER</label>
+                </div>
+                <div class="form-floating">
+                    <input type="state" name="state" class="form-control" id="state" placeholder="state">
+                    <label for="state">State</label>
+                </div>
+                <select name="running_state" class="form-select" aria-label="Default select example">
+                    <option value="continuous">Continuous</option>
+                    <option value="initial">Initial</option>
+                </select>
+                <button class="w-100 btn btn-lg btn-success" type="submit">Create
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="col-4">
+        <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
+            width="300" height="400">
+    </div>
+</div>
+{% endblock %}

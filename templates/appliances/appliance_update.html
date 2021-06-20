@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-8">
+        <div class="form-signin">
+            <form method="POST" action="/appliance/update">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="notification is-danger">
+                    {{ messages[0] }}
+                </div>
+                {% endif %}
+                {% endwith %}
+                <h1 class="h3 mb-3 fw-normal">Update the appliance</h1>
+                <label for="floatingInput">Category</label>
+                <select name="category_id" class="form-select" aria-label="Default select example">
+                    {%if categories%}
+                    {% for category in categories%}
+                    <option {%if appliance.category_id==category.id %}selected{% endif %} value="{{category.id}}">
+                        {{category.name}}</option>
+                    {%endfor%}
+                    {%endif%}
+                </select>
+                <div class="form-floating">
+                    <input type="name" value="{{appliance.name}}" name="name" class="form-control" id="floatingInput"
+                        placeholder="{{appliance.name}}">
+                    <label for="floatingInput">Name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="pin_num" value="{{appliance.pin_num}}" name="pin_num" class="form-control" id="pin_num"
+                        placeholder="{{appliance.pin_num}}">
+                    <label for="pin_num">PIN Number</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="state" value="{{appliance.state}}" name="state" class="form-control" id="state"
+                        placeholder="state" placeholder="{{appliance.state}}">
+                    <label for="state">State</label>
+                </div>
+                <select name="running_state" class="form-select" aria-label="Default select example">
+                    <option {%if appliance.running_state=="continuous" %}selected{%endif%} value="continuous">Continuous
+                    </option>
+                    <option {%if appliance.running_state=="initial" %}selected{%endif%} value="initial">Initial</option>
+                </select>
+                <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
+                    value="{{appliance.id}}">
+                <button class="w-100 btn btn-lg btn-success" type="submit">Update
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="col-4">
+        <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
+            width="300" height="400">
+    </div>
+</div>
+{% endblock %}
