@@ -2,45 +2,25 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
+
+{% if categories %}
 <div class="row">
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
-            <img src="https://cdn.pixabay.com/photo/2016/03/09/10/37/light-1246043_960_720.jpg"
-                 class="card-img-top" alt="light bulg">
+    {% for category in categories %}
+    <div class="col-6">
+        <div class="card">
+            <img src="{{category.image}}" class="card-img-top" alt="light bulg" width="400" height="300">
             <div class="card-body">
-                <h5 class="card-title">Lightnings</h5>
-                <p class="card-text">Some quick example text to build on the
-                    card title and make up the bulk of the card's content.</p>
-                <a href="{{ url_for('light.lights') }}"
-                   class="btn btn-primary">Lights</a>
+                <h5 class="card-title">{{category.name}}</h5>
+                <p class="card-text">{{category.description}}</p>
+                <a href="{{ url_for('category.category_get_view', id=category.id) }}"
+                    class="btn btn-primary">{{category.name}}</a>
             </div>
         </div>
     </div>
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
-            <img src="https://media.istockphoto.com/photos/electric-water-heater-picture-id522740964"
-                 class="card-img-top" alt="boiler">
-            <div class="card-body">
-                <h5 class="card-title">Boiler</h5>
-                <p class="card-text">Some quick example text to build on the
-                    card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Boilers</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
-            <img src="https://media.istockphoto.com/photos/two-modern-new-garage-doors-in-a-residential-district-picture-id1084811400?s=612x612"
-                 class="card-img-top" alt="garage door">
-            <div class="card-body">
-                <h5 class="card-title">Garage door</h5>
-                <p class="card-text">Some quick example text to build on the
-                    card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Garage doors</a>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
+
 </div>
+{% endif %}
 {% else %}
 <div class="row">
     <div class="col-12">
