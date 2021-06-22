@@ -14,15 +14,20 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">State</th>
                     <th scope="col">Name</th>
                     <th scope="col">Appliances</th>
                     <th scope="col">Cron</th>
+                    <th scope="col">Appliances state</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for scheduler in schedulers %}
                 <tr>
+                    <td>
+                        {{scheduler.state}}
+                    </td>
                     <td>
                         {{scheduler.name}}
                     </td>
@@ -35,6 +40,9 @@
                     </td>
                     <td>
                         {{scheduler.cron}}
+                    </td>
+                    <td>
+                        {{scheduler.appliance_state}}
                     </td>
                     <td>
                         <a class="btn btn-primary"

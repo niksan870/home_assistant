@@ -1,0 +1,82 @@
+import atexit
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from apscheduler.schedulers.background import BackgroundScheduler
+from w1thermsensor import W1ThermSensor
+import RPi.GPIO as GPIO
+import time
+
+# Set GPIO numbering mode
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+
+engine = create_engine('sqlite:///db.sqlite3')
+session = Session(engine)
+cron_scheduler = BackgroundScheduler()
+cron_time_list = ["second", "minute", "hour", "day", "month", "day_of_week"]
+
+def get_current_temperature():
+    sensor = W1ThermSensor()
+    temperature_raw = sensor.get_temperature()
+    return f"{'%.1f' % temperature_raw} °C"
+
+def set_gpio_appliances(appliances) -> None:
+    for appliance in appliances:
+        print(appliance.running_state)
+        GPIO.setup(appliance.pin_num,GPIO.OUT)
+        if appliance.running_state == "continuous":
+            energy_state = GPIO.HIGH
+            if appliance.state >= 1:
+                energy_state = GPIO.LOW
+            GPIO.output(appliance.pin_num,energy_state)
+        elif appliance.running_state == "initial":
+            if appliance.previous_state != appliance.state:
+                servo = GPIO.PWM(appliance.pin_num,50)
+                servo.start(0)
+                servo.ChangeDutyCycle(2+(appliance.state/18))
+                time.sleep(0.5)
+                servo.ChangeDutyCycle(0)
+                
+                appliance.previous_state = appliance.state
+                db.session.commit()
+
+def set_gpio_appliances_from_scheduler(appliances, appliances_state) -> None:
+    # print(time.strftime("%H:%M:%S", time.localtime()))
+    for appliance in appliances:
+        if appliance["running_state"] == "continuous":
+            GPIO.setup(appliance["pin_num"],GPIO.OUT)
+            energy_state = GPIO.HIGH
+            if appliances_state >= 1:
+                energy_state = GPIO.LOW
+            GPIO.output(appliance["pin_num"],energy_state)
+
+def initialize_schedulers(schedulers) -> None:
+    for scheduler in schedulers:
+        if scheduler.state != 0:
+            add_scheduler(scheduler)
+        
+def remove_scheduler(scheduler) -> None:
+    if cron_scheduler.get_job(scheduler.name):
+        cron_scheduler.remove_job(scheduler.name)
+        
+def add_scheduler(scheduler) -> None:
+    print(cron_scheduler.get_jobs())
+    if not cron_scheduler.get_job(scheduler.name):
+        
+        # Mapping Applications list to dict(DAO -> DTO) 
+        # becasue sessions are not possible to be controlled
+        # inside a job 
+        # If changes to are made to the Appliaction Model, this code
+        # may break!!!
+        appliances = []
+        for appliance in scheduler.__dict__["appliances"]:
+            appliances.append({
+                "running_state": appliance.running_state,
+                "pin_num": appliance.pin_num
+            })
+        dict_args = {cron_time_list[i]: val for i, val in enumerate(scheduler.cron.split())}
+        cron_scheduler.add_job(func=set_gpio_appliances_from_scheduler, id=scheduler.name, trigger="cron", args=[appliances, scheduler.__dict__["appliance_state"]], **dict_args)
+
+
+cron_scheduler.start()
+atexit.register(lambda: cron_scheduler.shutdown())

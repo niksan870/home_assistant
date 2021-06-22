@@ -3,16 +3,10 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from werkzeug.utils import redirect
 
-import RPi.GPIO as GPIO
-import time
-
 from home_assistant.categories.models import Category
+from home_assistant.service import set_gpio_appliances
 from .models import Appliance
 from .. import db
-
-# Set GPIO numbering mode
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)
 
 appliance = Blueprint('appliance', __name__)
 
@@ -21,23 +15,7 @@ appliance = Blueprint('appliance', __name__)
 def appliances():
     categories = Category.query.all()
     appliances = Appliance.query.filter_by(user_id=current_user.id).all()
-    for appliance in appliances:
-        GPIO.setup(appliance.pin_num,GPIO.OUT)
-        if appliance.running_state == "continuous":
-            energy_state = GPIO.LOW
-            if appliance.state >= 1:
-                energy_state = GPIO.HIGH
-            GPIO.output(appliance.pin_num,energy_state)
-        elif appliance.running_state == "initial":
-            if appliance.previous_state != appliance.state:
-                servo1 = GPIO.PWM(appliance.pin_num,50)
-                servo1.start(0)
-                servo1.ChangeDutyCycle(2+(appliance.state/18))
-                time.sleep(0.5)
-                servo1.ChangeDutyCycle(0)
-
-                appliance.previous_state = appliance.state
-                db.session.commit()
+    set_gpio_appliances(appliances)
 
     return render_template('appliances/appliances.html', appliances=appliances, categories=categories)
 

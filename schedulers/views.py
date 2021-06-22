@@ -5,6 +5,7 @@ from werkzeug.utils import redirect
 
 from .models import Scheduler
 from home_assistant.appliances.models import Appliance
+from home_assistant.service import *
 from .. import db
 
 scheduler = Blueprint('scheduler', __name__)
@@ -28,14 +29,16 @@ def scheduler_get_create():
 def scheduler_post_create():
     name = request.form.get('name')
     cron = request.form.get('cron')
+    state = request.form.get('state')
     appliances = request.form.getlist('appliances')
+    appliance_state = request.form.get('appliance_state')
     scheduler = Scheduler(
         name=name,
         cron=cron,
+        appliances=Appliance.query.filter(Appliance.id.in_(appliances)).all(),
+        appliance_state=appliance_state,
+        state=state
     )
-    for appliance in appliances:
-        appliance_object = Appliance.query.get(appliance)
-        scheduler.appliances.append(appliance_object)
 
     db.session.add(scheduler)
     db.session.commit()
@@ -67,16 +70,25 @@ def scheduler_get_view(id):
 def scheduler_post_update():
     name = request.form.get('name')
     cron = request.form.get('cron')
+    state = request.form.get('state')
     appliances = request.form.getlist('appliances')
     scheduler_id = request.form.get("scheduler_id")
+    appliance_state = request.form.get('appliance_state')
     scheduler = Scheduler.query.get(scheduler_id)
     if scheduler:
+        prev_state = scheduler.state
         scheduler.name = name
         scheduler.cron = cron
-        scheduler.appliances = []
-        for appliance in appliances:
-            appliance_object = Appliance.query.get(appliance)
-            scheduler.appliances.append(appliance_object)
+        scheduler.state = state
+        scheduler.appliances = Appliance.query.filter(Appliance.id.in_(appliances)).all()
+
+        # if int(state) != prev_state:
+        if int(state) == 0:
+            set_gpio_appliances(scheduler.appliances)
+            remove_scheduler(scheduler)
+        else:
+            add_scheduler(scheduler)
+
         db.session.commit()
         return redirect('/scheduler/all')
 

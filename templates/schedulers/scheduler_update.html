@@ -40,6 +40,16 @@
             <input type="img" value="{{scheduler.cron}}" name="cron" class="form-control" id="cron">
             <label for="cron">{{scheduler.cron}}</label>
         </div>
+        <div class="form-floating">
+            <input type="number" value="{{scheduler.appliance_state}}" name="appliance_state" class="form-control"
+                id="appliance_state" placeholder="appliance_state">
+            <label for="appliance_state">Appliance State</label>
+        </div>
+        <div class="form-floating">
+            <input type="number" value="{{scheduler.state}}" name="state" class="form-control" id="state"
+                placeholder="state">
+            <label for="state">State</label>
+        </div>
         <input type="hidden" name="scheduler_id" class="form-control" placeholder="{{scheduler.id}}"
             value="{{scheduler.id}}">
         <button class="w-100 btn btn-lg btn-success" type="submit">Update
