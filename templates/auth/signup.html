@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-signin">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }} Go to <a href="{{ url_for('auth.login') }}">login
+        page</a>.
+    </div>
+    {% endif %}
+    {% endwith %}
+    <form action="/signup" method="POST">
+        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+        <div class="form-floating">
+            <input id="floatingInput" class="form-control" type="email"
+                   name="email"
+                   placeholder="Email" autofocus="">
+            <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating">
+            <input name="name"
+                   placeholder="Name" class="form-control"
+                   id="floatingName">
+            <label for="floatingName">Name</label>
+        </div>
+        <div class="form-floating">
+            <input type="password"
+                   name="password" class="form-control"
+                   id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up
+        </button>
+    </form>
+</div>
+{% endblock %}
