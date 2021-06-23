@@ -2,16 +2,10 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import time
-import atexit
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 db = SQLAlchemy()
 from home_assistant.schedulers.models import Scheduler
-
-engine = create_engine('sqlite:///db.sqlite3')
 
 def create_app():
     app = Flask(__name__)
