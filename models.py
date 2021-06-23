@@ -10,5 +10,6 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
     appliance = relationship("Appliance", uselist=False, back_populates="user")
+    scheduler = relationship("Scheduler", uselist=False, back_populates="user")
 
 

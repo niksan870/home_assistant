@@ -2,6 +2,8 @@ import atexit
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from apscheduler.schedulers.background import BackgroundScheduler
+from home_assistant.schedulers.models import Scheduler
+from home_assistant import db
 from w1thermsensor import W1ThermSensor
 import RPi.GPIO as GPIO
 import time
@@ -22,7 +24,6 @@ def get_current_temperature():
 
 def set_gpio_appliances(appliances) -> None:
     for appliance in appliances:
-        print(appliance.running_state)
         GPIO.setup(appliance.pin_num,GPIO.OUT)
         if appliance.running_state == "continuous":
             energy_state = GPIO.HIGH
@@ -41,12 +42,12 @@ def set_gpio_appliances(appliances) -> None:
                 db.session.commit()
 
 def set_gpio_appliances_from_scheduler(appliances, appliances_state) -> None:
-    # print(time.strftime("%H:%M:%S", time.localtime()))
+    print(time.strftime("%H:%M:%S", time.localtime()))
     for appliance in appliances:
         if appliance["running_state"] == "continuous":
             GPIO.setup(appliance["pin_num"],GPIO.OUT)
             energy_state = GPIO.HIGH
-            if appliances_state >= 1:
+            if int(appliances_state) >= 1:
                 energy_state = GPIO.LOW
             GPIO.output(appliance["pin_num"],energy_state)
 
@@ -60,14 +61,13 @@ def remove_scheduler(scheduler) -> None:
         cron_scheduler.remove_job(scheduler.name)
         
 def add_scheduler(scheduler) -> None:
-    print(cron_scheduler.get_jobs())
     if not cron_scheduler.get_job(scheduler.name):
-        
         # Mapping Applications list to dict(DAO -> DTO) 
         # becasue sessions are not possible to be controlled
         # inside a job 
         # If changes to are made to the Appliaction Model, this code
         # may break!!!
+        print(scheduler)
         appliances = []
         for appliance in scheduler.__dict__["appliances"]:
             appliances.append({
@@ -76,7 +76,14 @@ def add_scheduler(scheduler) -> None:
             })
         dict_args = {cron_time_list[i]: val for i, val in enumerate(scheduler.cron.split())}
         cron_scheduler.add_job(func=set_gpio_appliances_from_scheduler, id=scheduler.name, trigger="cron", args=[appliances, scheduler.__dict__["appliance_state"]], **dict_args)
+    
 
+def intialize_app_cron_jobs():
+    # Execute cron tasks
+    session = Session(engine)
+    schedulers = session.query(Scheduler).all()
+    initialize_schedulers(schedulers)
+    session.close()
 
 cron_scheduler.start()
 atexit.register(lambda: cron_scheduler.shutdown())

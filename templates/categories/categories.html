@@ -6,43 +6,45 @@
         <a class="btn btn-success" aria-current="page" href="{{ url_for('category.category_get_create') }}">Add
             a category</a>
     </div>
-    <div class="col-8">
+    <div class="col-lg-8">
         <h1 class="title">
             Your categories
         </h1>
         {% if categories %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for category in categories %}
-                <tr>
-                    <td>
-                        {{category.name}}
-                    </td>
-                    <td>
-                        <a class="btn btn-primary"
-                            href="{{ url_for('category.category_get_view', id=category.id) }}">View</a>
-                        <a class="btn btn-success"
-                            href="{{ url_for('category.category_get_update', id=category.id) }}">Edit</a>
-                        <form style="display:inline;" method="POST" action="/category/delete">
-                            <input type="hidden" name="category_id" class="form-control" placeholder="{{category.id}}"
-                                value="{{category.id}}">
-                            <button class="btn btn-danger" type="submit">Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}0{% endif %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>
+                            {{category.name}}
+                        </td>
+                        <td>
+                            <a class="btn btn-primary mt-1 mb-1"
+                                href="{{ url_for('category.category_get_view', id=category.id) }}">View</a>
+                            <a class="btn btn-success"
+                                href="{{ url_for('category.category_get_update', id=category.id) }}">Edit</a>
+                            <form class="d-inline" method="POST" action="/category/delete">
+                                <input type="hidden" name="category_id" class="form-control"
+                                    placeholder="{{category.id}}" value="{{category.id}}">
+                                <button class="btn btn-danger" type="submit">Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}<p class="display-6">You currently have no categories, please create one</p>{% endif %}
     </div>
-    <div class="col-4">
+    <div class="col-lg-4">
         <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
             width="300" height="400">
     </div>

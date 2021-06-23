@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-8">
+    <div class="col-lg-8">
         <div class="form-signin">
             <form method="POST" action="/appliance/update">
                 {% with messages = get_flashed_messages() %}
@@ -28,7 +28,7 @@
                     <label for="floatingInput">Name</label>
                 </div>
                 <div class="form-floating">
-                    <input type="pin_num" value="{{appliance.pin_num}}" name="pin_num" class="form-control" id="pin_num"
+                    <input type="number" value="{{appliance.pin_num}}" name="pin_num" class="form-control" id="pin_num"
                         placeholder="{{appliance.pin_num}}">
                     <label for="pin_num">PIN Number</label>
                 </div>
@@ -50,7 +50,7 @@
             </form>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-lg-4">
         <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
             width="300" height="400">
     </div>

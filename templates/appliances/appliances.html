@@ -6,66 +6,66 @@
         <a class="btn btn-success" aria-current="page" href="{{ url_for('appliance.appliance_get_create') }}">Add
             an appliance</a>
     </div>
-    <div class="col-8">
-        <h1 class="title">
+    <div class="col-lg-8">
+        <!-- <h1 class="title">
             Your appliances
-        </h1>
+        </h1> -->
         {% if appliances %}
         {% for category in categories %}
         <h2>{{category.name}}</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">PIN NUMBER</th>
-                    <th scope="col">State</th>
-                    <th scope="col">Previous State</th>
-                    <th scope="col">Running State</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appliance in category.appliances %}
-                <tr>
-                    <td>{{appliance.name}}</td>
-                    <td>{{appliance.pin_num}}</td>
-                    <td>{{appliance.state}}</td>
-                    <td>{{appliance.previous_state}}</td>
-                    <td>{{appliance.running_state}}</td>
-                    <td>
-                        {% if appliance.running_state =="continuous" %}
-                        <form style="display:inline;" method="POST" action="/appliance/switch">
-                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
-                                value="{{appliance.id}}">
-                            <button class="btn btn-primary" type="submit">Switch {% if appliance.state == 0
-                                %}on{%else%}off{%endif%}
-                            </button>
-                        </form>
-                        {%else%}
-                        <form style="display:inline;" method="POST" action="/appliance/run_initial">
-                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
-                                value="{{appliance.id}}">
-                            <button class="btn btn-primary" type="submit">Run
-                            </button>
-                        </form>
-                        {%endif%}
-                        <a class="btn btn-success"
-                            href="{{ url_for('appliance.appliance_get_update', id=appliance.id) }}">Edit</a>
-                        <form style="display:inline;" method="POST" action="/appliance/delete">
-                            <input type="hidden" name="appliance_id" class="form-control" placeholder="{{appliance.id}}"
-                                value="{{appliance.id}}">
-                            <button class="btn btn-danger" type="submit">Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">PIN NUMBER</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Running State</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appliance in category.appliances %}
+                    <tr>
+                        <td>{{appliance.name}}</td>
+                        <td>{{appliance.pin_num}}</td>
+                        <td>{{appliance.state}}</td>
+                        <td>{{appliance.running_state}}</td>
+                        <td>
+                            {% if appliance.running_state =="continuous" %}
+                            <form class="d-inline" method="POST" action="/appliance/switch">
+                                <input type="hidden" name="appliance_id" class="form-control"
+                                    placeholder="{{appliance.id}}" value="{{appliance.id}}">
+                                <button class="btn btn-primary" type="submit">Switch {% if appliance.state == 0
+                                    %}on{%else%}off{%endif%}
+                                </button>
+                            </form>
+                            {%else%}
+                            <form class="d-inline" method="POST" action="/appliance/run_initial">
+                                <input type="hidden" name="appliance_id" class="form-control"
+                                    placeholder="{{appliance.id}}" value="{{appliance.id}}">
+                                <button class="btn btn-primary" type="submit">Run
+                                </button>
+                            </form>
+                            {%endif%}
+                            <a class="btn btn-success mt-1 mb-1"
+                                href="{{ url_for('appliance.appliance_get_update', id=appliance.id) }}">Edit</a>
+                            <form class="d-inline" method="POST" action="/appliance/delete">
+                                <input type="hidden" name="appliance_id" class="form-control"
+                                    placeholder="{{appliance.id}}" value="{{appliance.id}}">
+                                <button class="btn btn-danger" type="submit">Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% endfor %}
-        {% else %}0{% endif %}
+        {% else %}<p class="display-6">You currently have no appliances, please create one</p>{% endif %}
     </div>
-    <div class="col-4">
+    <div class="col-lg-4">
         <img src="https://www.bigmessowires.com/wp-content/uploads/2018/05/Raspberry-GPIO.jpg" alt="Raspberry-GPIO"
             width="300" height="400">
     </div>

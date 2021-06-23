@@ -37,9 +37,12 @@ def scheduler_post_create():
         cron=cron,
         appliances=Appliance.query.filter(Appliance.id.in_(appliances)).all(),
         appliance_state=appliance_state,
-        state=state
+        state=state,
+        user_id=flask_login.current_user.id,
     )
-
+    if int(state) > 0:
+        add_scheduler(scheduler)
+    
     db.session.add(scheduler)
     db.session.commit()
     return redirect('/scheduler/all')
@@ -97,9 +100,25 @@ def scheduler_post_update():
 
 @scheduler.route("/scheduler/delete", methods=["POST"])
 @login_required
-def scheduler_put_update():
+def scheduler_put_delete():
     scheduler_id = request.form.get('scheduler_id')
     scheduler = Scheduler.query.get(scheduler_id)
     db.session.delete(scheduler)
+    db.session.commit()
+    return redirect("/scheduler/all")
+
+
+@scheduler.route("/scheduler/switch", methods=["POST"])
+@login_required
+def scheduler_put_update():
+    scheduler_id = request.form.get('scheduler_id')
+    scheduler = Scheduler.query.get(scheduler_id)
+    if scheduler.state == 0:
+        add_scheduler(scheduler)
+        scheduler.state = 1
+    else:
+        set_gpio_appliances(scheduler.appliances)
+        remove_scheduler(scheduler)
+        scheduler.state = 0
     db.session.commit()
     return redirect("/scheduler/all")

@@ -45,14 +45,10 @@ login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
 from .models import User
-from home_assistant.service import set_gpio_appliances_from_scheduler, initialize_schedulers
+from home_assistant.service import set_gpio_appliances_from_scheduler, intialize_app_cron_jobs
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Execute cron tasks
-session = Session(engine)
-schedulers = session.query(Scheduler).all()
-initialize_schedulers(schedulers)
-session.close()
+intialize_app_cron_jobs()
