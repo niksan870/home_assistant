@@ -72,6 +72,7 @@
                     <li class="nav-item">
                         <a href="{{ url_for('main.index') }}" class="nav-link active" aria-current="page">Home</a>
                     </li>
+                    {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('category.categories') }}">Categories</a>
                     </li>
@@ -81,6 +82,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('scheduler.schedulers') }}">Schedulers</a>
                     </li>
+                    {%endif%}
                 </ul>
                 {% if not current_user.is_authenticated %}
                 <a href="{{ url_for('auth.login') }}" class="btn btn-primary">

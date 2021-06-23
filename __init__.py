@@ -27,8 +27,8 @@ def create_app():
 
 
 app = create_app()
-from .auth import auth as auth_blueprint
-from .main import main as main_blueprint
+from .auth.views import auth as auth_blueprint
+from .main.views import main as main_blueprint
 from .appliances.views import appliance as appliance_blueprint
 from .categories.views import category as category_blueprint
 from .schedulers.views import scheduler as scheduler_blueprint
@@ -44,7 +44,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
-from .models import User
+from .auth.models import User
 from home_assistant.service import set_gpio_appliances_from_scheduler, intialize_app_cron_jobs
 
 @login_manager.user_loader
