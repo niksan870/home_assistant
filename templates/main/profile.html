@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="title">
+            Welcome, {{ name }}
+        </h1>
+        <h3>
+            You have {{ num_of_appliances }} appliance{% if num_of_appliances > 1%}s{%endif%} and {{num_of_schedulers}}
+            shceduler{% if num_of_schedulers > 1%}s{%endif%}
+        </h3>
+    </div>
+</div>
+{% endblock %}
