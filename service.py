@@ -5,6 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from home_assistant.schedulers.models import Scheduler
 from home_assistant import db
 from w1thermsensor import W1ThermSensor
+from . import mail
 import RPi.GPIO as GPIO
 import time
 
