@@ -79,19 +79,25 @@ def scheduler_post_update():
     appliance_state = request.form.get('appliance_state')
     scheduler = Scheduler.query.get(scheduler_id)
     if scheduler:
+        old_appliance_state = scheduler.appliance_state
         prev_state = scheduler.state
         scheduler.name = name
         scheduler.cron = cron
         scheduler.state = state
         scheduler.appliances = Appliance.query.filter(Appliance.id.in_(appliances)).all()
-
-        # if int(state) != prev_state:
+        scheduler.appliance_state = appliance_state
+        
+        if appliance_state != old_appliance_state:
+            remove_scheduler(scheduler)
+            add_scheduler(scheduler)
+        
         if int(state) == 0:
             set_gpio_appliances(scheduler.appliances)
             remove_scheduler(scheduler)
         else:
             add_scheduler(scheduler)
 
+        scheduler.appliance_state = appliance_state
         db.session.commit()
         return redirect('/scheduler/all')
 

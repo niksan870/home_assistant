@@ -43,10 +43,10 @@ def set_gpio_appliances(appliances) -> None:
                 db.session.commit()
 
 def set_gpio_appliances_from_scheduler(appliances, appliances_state) -> None:
-    print(time.strftime("%H:%M:%S", time.localtime()))
+    print(time.strftime("%H:%M:%S", time.localtime()), appliances_state)
     for appliance in appliances:
         if appliance["running_state"] == "continuous":
-            GPIO.setup(appliance["pin_num"],GPIO.OUT)
+            GPIO.setup(appliance["pin_num"], GPIO.OUT)
             energy_state = GPIO.HIGH
             if int(appliances_state) >= 1:
                 energy_state = GPIO.LOW
@@ -59,10 +59,12 @@ def initialize_schedulers(schedulers) -> None:
         
 def remove_scheduler(scheduler) -> None:
     if cron_scheduler.get_job(scheduler.name):
+        print("Removeing scheduler")
         cron_scheduler.remove_job(scheduler.name)
         
 def add_scheduler(scheduler) -> None:
     if not cron_scheduler.get_job(scheduler.name):
+        print("Adding new scheduler")
         # Mapping Applications list to dict(DAO -> DTO) 
         # becasue sessions are not possible to be controlled
         # inside a job 
