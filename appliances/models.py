@@ -14,7 +14,9 @@ class Appliance(db.Model):
         nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = relationship("User", back_populates="appliance")
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
     def __repr__(self):
-        return f'<Appliance name={self.name}, pin_num={self.pin_num}, state={self.state}, category_id={self.category_id}, user_id={self.user_id}, scheduler_id={self.scheduler_id}>'
+        return f'<Appliance name={self.name}, pin_num={self.pin_num}, state={self.state}, category_id={self.category_id}, user_id={self.user_id}, scheduler_id={self.scheduler_id}, created_at={self.created_at}, updated_at={self.updated_at}>'
 

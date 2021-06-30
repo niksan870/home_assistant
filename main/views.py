@@ -14,14 +14,14 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     categories = Category.query.all()
-    current_temp = get_current_temperature()
-    if "29." in current_temp:
-        msg = Message("Hello",
-                  sender="flask_home_assistant_idk@gmail.com",
-                  recipients=[current_user.email])
-        msg.body = "The temp is over 29 celsius it may be kind of hot idk. Turn on the air conditioner."
-        msg.html = "<b>The temp is over 29 celsius it may be kind of hot idk.</b>"
-        mail.send(msg)
+    # current_temp = get_current_temperature()
+    # if "29." in current_temp:
+    #     msg = Message("Hello",
+    #               sender="flask_home_assistant_idk@gmail.com",
+    #               recipients=[current_user.email])
+    #     msg.body = "The temp is over 29 celsius it may be kind of hot idk. Turn on the air conditioner."
+    #     msg.html = "<b>The temp is over 29 celsius it may be kind of hot idk.</b>"
+    #     mail.send(msg)
     return render_template('main/index.html', categories=categories, temperature=current_temp)
 
 
