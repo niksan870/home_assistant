@@ -67,5 +67,5 @@ Before intalling the libraries you should have pip already installed
    ```
 5. Run the flask app with the following command
 ```
-   flask run
+   python __init__.py
    ```
