@@ -12,8 +12,11 @@ class User(UserMixin, db.Model):
     appliance = relationship("Appliance", uselist=False, back_populates="user")
     scheduler = relationship("Scheduler", uselist=False, back_populates="user")
     created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
+    updated_at = db.Column(
+        db.DateTime,
+        server_default=db.func.now(),
+        server_onupdate=db.func.now(),
+    )
 
     def __repr__(self):
-        return f'<User name={self.name}, email={self.email}, appliance={self.appliance}, scheduler={self.scheduler}, created_at={self.created_at}, updated_at={self.updated_at}>'
-
+        return f"<User name={self.name}, email={self.email}, appliance={self.appliance}, scheduler={self.scheduler}, created_at={self.created_at}, updated_at={self.updated_at}>"
