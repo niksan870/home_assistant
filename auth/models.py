@@ -9,7 +9,6 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
-    emails_sent = db.Column(db.Integer)
     appliance = relationship("Appliance", uselist=False, back_populates="user")
     scheduler = relationship("Scheduler", uselist=False, back_populates="user")
     created_at = db.Column(db.DateTime, server_default=db.func.now())
