@@ -63,6 +63,7 @@ def remove_scheduler(scheduler) -> None:
         cron_scheduler.remove_job(scheduler.name)
         
 def add_scheduler(scheduler) -> None:
+    # TODO: Schedulers should have priority otherwise there is no strict definition of which scheduler should be first, hence disorder happens
     if not cron_scheduler.get_job(scheduler.name):
         print("Adding new scheduler")
         # Mapping Applications list to dict(DAO -> DTO) 
@@ -82,7 +83,7 @@ def add_scheduler(scheduler) -> None:
     
 
 def intialize_app_cron_jobs():
-    # Execute cron tasks
+    """Execute cron tasks"""
     session = Session(engine)
     schedulers = session.query(Scheduler).all()
     initialize_schedulers(schedulers)

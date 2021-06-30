@@ -14,6 +14,7 @@ from werkzeug.utils import redirect
 from multiprocessing import Process, Value
 import constants
 import asyncio
+import time
 
 import sys
 import os
@@ -72,30 +73,31 @@ intialize_app_cron_jobs()
 
 def record_loop(loop_on):
     """Send email to every user if temp is over * in an hour time span"""
-    session = Session(engine)
-    waiter = 0
-    while True:
-        if loop_on.value == True:
-            current_temp = get_current_temperature()
-            if constants.TARGET_TEMPERATURE in current_temp and waiter == 0:
-                users = session.query(User).all()
-                loop = asyncio.get_event_loop()
-                tasks = []
-                for user in users:
-                    email_data = {
-                        'subject': 'Alarming Temperature in the room',
-                        'to': user.email,
-                        'body': f'Temperature is {constants.TARGET_TEMPERATURE} do something.'
-                    }
-                    tasks.append(loop.create_task(send_async_email(email_data)))
-                loop.run_until_complete(asyncio.wait(tasks))
-                loop.close()
-                waiter = 3600 # an hour
-        time.sleep(1)
-        if waiter > 0:
-            waiter -= 1
-        print(waiter)
-    session.close()
+    # session = Session(engine)
+    # waiter = 0
+    # while True:
+    #     if loop_on.value == True:
+    #         current_temp = get_current_temperature()
+    #         if constants.TARGET_TEMPERATURE in current_temp and waiter == 0:
+    #             users = session.query(User).all()
+    #             loop = asyncio.get_event_loop()
+    #             tasks = []
+    #             for user in users:
+    #                 email_data = {
+    #                     'subject': 'Alarming Temperature in the room',
+    #                     'to': user.email,
+    #                     'body': f'Temperature is {current_temp} do something.'
+    #                 }
+    #                 tasks.append(loop.create_task(send_async_email(email_data)))
+    #             loop.run_until_complete(asyncio.wait(tasks))
+    #             loop.close()
+    #             waiter = 3600 # an hour
+    #     time.sleep(1)
+    #     if waiter > 0:
+    #         waiter -= 1
+    #     print(waiter)
+    # session.close()
+    pass
 
 async def send_async_email(email_data):
     """Background task to send an email with Flask-Mail."""
