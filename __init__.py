@@ -12,6 +12,7 @@ from flask_migrate import Migrate
 from flask_mail import Mail, Message
 from werkzeug.utils import redirect
 from multiprocessing import Process, Value
+import constants
 import asyncio
 
 import sys
@@ -29,16 +30,7 @@ mail = Mail()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-    app.config['SECRET_KEY'] = 'thisismysecretkeydonotstealit'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-
-    app.config['MAIL_SERVER']='smtp.gmail.com'
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USERNAME'] = 'niksan870@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'hlqnbtacqusvztlb'
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_DEFAULT_SENDER'] = 'niksan870@gmail.com'
+    app.config.from_object('settings')
 
     migrate = Migrate(app, db)
     db.init_app(app)
@@ -82,11 +74,10 @@ def record_loop(loop_on):
     """Send email to every user if temp is over * in an hour time span"""
     session = Session(engine)
     waiter = 0
-    target_temp = "22"
     while True:
         if loop_on.value == True:
             current_temp = get_current_temperature()
-            if target_temp in current_temp and waiter == 0:
+            if constants.TARGET_TEMPERATURE in current_temp and waiter == 0:
                 users = session.query(User).all()
                 loop = asyncio.get_event_loop()
                 tasks = []
@@ -94,14 +85,15 @@ def record_loop(loop_on):
                     email_data = {
                         'subject': 'Alarming Temperature in the room',
                         'to': user.email,
-                        'body': f'Temperature is {target_temp} do something.'
+                        'body': f'Temperature is {constants.TARGET_TEMPERATURE} do something.'
                     }
                     tasks.append(loop.create_task(send_async_email(email_data)))
                 loop.run_until_complete(asyncio.wait(tasks))
                 loop.close()
-                waiter = 3600
+                waiter = 3600 # an hour
         time.sleep(1)
-        waiter -= 1
+        if waiter > 0:
+            waiter -= 1
         print(waiter)
     session.close()
 
